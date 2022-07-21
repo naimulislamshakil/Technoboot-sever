@@ -14,12 +14,25 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-client.connect((err) => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-console.log("db connet");
+
+const run = async () => {
+  try {
+    await client.connect();
+
+    const allStudentCollaction = client
+      .db("student-management")
+          .collection("all-student");
+      
+      app.get("/all_student", (req, res) => {
+          const result = await allStudentCollaction.find().toArray();
+          res.send(result)
+      });
+  } finally {
+    // await client.close()
+  }
+};
+
+run().catch(console.dir());
 
 app.get("/", (req, res) => {
   res.send("How are you?");
