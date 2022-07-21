@@ -45,7 +45,19 @@ const run = async () => {
     // add student
     app.post("/singel_student", async (req, res) => {
       const user = req.body;
-      const result = await allStudentCollaction.insert(user);
+      const result = await allStudentCollaction.insertOne(user);
+      res.send(result);
+    });
+    // update student
+    app.put("/update_student/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = req.body;
+      const quaty = { _id: ObjectId(id) };
+      const doc = {
+        $set: user,
+      };
+      const option = { upsert: true };
+      const result = await allStudentCollaction.updateOne(quaty, doc, option);
       res.send(result);
     });
   } finally {
