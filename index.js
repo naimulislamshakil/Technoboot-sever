@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 
@@ -21,12 +21,33 @@ const run = async () => {
 
     const allStudentCollaction = client
       .db("student-management")
-          .collection("all-student");
-      
-      app.get("/all_student", (req, res) => {
-          const result = await allStudentCollaction.find().toArray();
-          res.send(result)
-      });
+      .collection("all-student");
+    // get all student
+    app.get("/all_student", async (req, res) => {
+      const result = await allStudentCollaction.find().toArray();
+      res.send(result);
+    });
+    // delete a student
+    app.delete("/all_student/:id", async (req, res) => {
+      const id = req.params.id;
+      const quary = { _id: ObjectId(id) };
+      const result = await allStudentCollaction.deleteOne(quary);
+      res.send(result);
+    });
+    //   get a student
+    app.get("/singel_student/:id", async (req, res) => {
+      const id = req.params.id;
+      const quaty = { _id: ObjectId(id) };
+      const result = await allStudentCollaction.findOne(quaty);
+      res.send(result);
+    });
+
+    // add student
+    app.post("/singel_student", async (req, res) => {
+      const user = req.body;
+      const result = await allStudentCollaction.insert(user);
+      res.send(result);
+    });
   } finally {
     // await client.close()
   }
